@@ -1,7 +1,11 @@
-const renderQuestion = ({text, submitText = `Ответить`, options}, cb) => {
+const renderQuestion = ({text, submitText = `Ответить`, options, index, count}, cb) => {
   
   const form = document.createElement(`form`);
   form.className = `pure-form pure-form-stacked`;
+
+  if(count){
+    text = `${index + 1}/${count}. ${text}`;
+  }
 
   const optionsMarkup = options
     .map(
@@ -13,7 +17,7 @@ const renderQuestion = ({text, submitText = `Ответить`, options}, cb) =>
     .join(``);
 
   form.innerHTML = `<fieldset>
-    <p class="question-text">${text}</p>
+    <h2>${text}</h2>
     ${optionsMarkup}
     <input class="pure-button pure-button-primary" type="submit" value="${submitText}">
   </fieldset>`;
@@ -29,9 +33,9 @@ const renderQuestion = ({text, submitText = `Ответить`, options}, cb) =>
 
 }
 
-const renderResult = ({text, submitText = `Пройти ещё раз`}, cb) => {
+const renderResult = ({header, text, submitText = `Пройти ещё раз`}, cb) => {
   const template = document.createElement(`template`);
-  template.innerHTML = `<p>${text}</p><button class="pure-button pure-button-primary" id="again">${submitText}</button>`;
+  template.innerHTML = `<h2>${header}</h2><p>${text}</p><button class="pure-button pure-button-primary" id="again">${submitText}</button>`;
   template.content.getElementById(`again`).addEventListener(`click`, cb);
   return template.content;
 }
@@ -49,24 +53,37 @@ const applyAnswer = (data, answer) => {
   }
 }
 
+const getWeights = (answerData, columns, matrix) => {
+  return matrix.map(([name, ...vector]) => {
+    let weight = columns.reduce(
+      (acc, next, index) => 
+        acc + (answerData[next] || 0) * vector[index],
+      answerData[name] || 0
+    );
+    return [name, weight];
+  });
+}
+
 const runTest = (container, {initialData, questions, results, chooseResult}) => {
   
-  let questionIndex = 0;
+  const count = questions.length;
+  let index = 0;
   let data = initialData;
 
   const loop = () => {
-    if(questionIndex < questions.length){
-      const form = renderQuestion(questions[questionIndex], (answer) => {
+    if(index < count){
+      const form = renderQuestion({...questions[index], index, count}, (answer) => {
         data = applyAnswer(data, answer);
-        questionIndex++;
+        index++;
         loop();
       });
       container.innerHTML = ``;
       container.appendChild(form);
     }else{
       const result = results[chooseResult(data)];
+      console.log(result);
       const resultElement = renderResult(result, () => {
-        questionIndex = 0;
+        index = 0;
         data = initialData;
         loop();
       });
