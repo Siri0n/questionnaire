@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="text/javascript" src="../common.js"></script>
+  <script type="text/javascript" src="./test-data.js"></script>
+  <title>Тест: какое наказание ты заслужила сегодня?</title>
+</head>
+<body>
+  <header class="pure-g"> 
+    <h1 class="pure-u-3-5">
+      Какое наказание ты заслужила сегодня?
+    </h1>
+  </header>
+  <main class="pure-g">
+    <div id="main" class="pure-u-3-5"></div>
+  </main>
+  <script type="text/javascript">
+    runTest(document.getElementById(`main`), testData);
+  </script>
+</body>
+</html>
